@@ -19,30 +19,28 @@ def window_sumsquare(
     This is used to estimate modulation effects induced by windowing
     observations in short-time fourier transforms.
 
-    Parameters
-    ----------
-    window : string, tuple, number, callable, or list-like
-        Window specification, as in `get_window`
+    Arguments:
+        window : string, tuple, number, callable, or list-like
+            Window specification, as in `get_window`
 
-    n_frames : int > 0
-        The number of analysis frames
+        n_frames : int > 0
+            The number of analysis frames
 
-    hop_length : int > 0
-        The number of samples to advance between frames
+        hop_length : int > 0
+            The number of samples to advance between frames
 
-    win_length : [optional]
-        The length of the window function.  By default, this matches `n_fft`.
+        win_length : [optional]
+            The length of the window function.  By default, this matches `n_fft`.
 
-    n_fft : int > 0
-        The length of each analysis frame.
+        n_fft : int > 0
+            The length of each analysis frame.
 
-    dtype : np.dtype
-        The data type of the output
+        dtype : np.dtype
+            The data type of the output
 
-    Returns
-    -------
-    wss : np.ndarray, shape=`(n_fft + hop_length * (n_frames - 1))`
-        The sum-squared envelope of the window function
+    Returns:
+        wss : np.ndarray, shape=`(n_fft + hop_length * (n_frames - 1))`
+            The sum-squared envelope of the window function
     """
     if win_length is None:
         win_length = n_fft
@@ -64,10 +62,9 @@ def window_sumsquare(
 
 def griffin_lim(magnitudes, stft_fn, n_iters=30):
     """
-    PARAMS
-    ------
-    magnitudes: spectrogram magnitudes
-    stft_fn: STFT class with transform (STFT) and inverse (ISTFT) methods
+    Arguments:    
+        magnitudes: spectrogram magnitudes
+        stft_fn: STFT class with transform (STFT) and inverse (ISTFT) methods
     """
 
     angles = np.angle(np.exp(2j * np.pi * np.random.rand(*magnitudes.size())))
@@ -83,17 +80,15 @@ def griffin_lim(magnitudes, stft_fn, n_iters=30):
 
 def dynamic_range_compression(x, C=1, clip_val=1e-5):
     """
-    PARAMS
-    ------
-    C: compression factor
+    Arguments:
+        C: compression factor
     """
     return torch.log(torch.clamp(x, min=clip_val) * C)
 
 
 def dynamic_range_decompression(x, C=1):
     """
-    PARAMS
-    ------
-    C: compression factor used to compress
+    Arguments:
+        C: compression factor used to compress
     """
     return torch.exp(x) / C

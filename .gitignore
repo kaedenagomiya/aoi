@@ -1,5 +1,6 @@
 # Custom setting
 memo.md
+memo*
 data/*
 !README.md
 wandb/

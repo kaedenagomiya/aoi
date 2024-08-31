@@ -29,6 +29,7 @@ wandb = "^0.17.7"
 pydub = "^0.25.1"
 llvmlite = "^0.43.0"
 librosa = "^0.10.2.post1"
+monotonic-align = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.2"

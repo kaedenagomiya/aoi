@@ -1,13 +1,18 @@
 # Custom setting
-memo.md
-memo*
+logs/
+test/
+wandb/
 data/*
 !README.md
-wandb/
 test_*
 *.old
 test_mlp
 *.sif
+memo.md
+memo*
+hifi_gan/cp_hifigan
+hifi_gan/cmd.sh
+hifi_gan/run_train.sh
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

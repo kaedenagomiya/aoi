@@ -8,16 +8,33 @@
 #   you need to give this shell, by chmod u+x or 755.
 # Arguments:
 #   AOI: toy command
-#   intr: get interactive gpu session
+#   intr <gpu_session>: get interactive gpu session
 #   dpull: get my container_image from dockerhub
 #   drun: run code with singularity
+#   exec_intr: only use interactive job
+#   runb: run train by batchjob
 #   help: descript about usage this script
 
 
 lenv_URL="docker://nagomiya/env_aoi:latest"
 lenv_NAME="env_aoi_latest.sif"
+DIR_ATELIER="/work/sora-sa/aoi"
+INTR_SH="${DIR_ATELIER}/test_intr.sh"
+RUN_SH="${DIR_ATELIER}/run_train.sh"
 
-module load singularity cuda/12.2u2 
+gpu_num=1
+cpu_num=4
+session_time_intr="0-02:00:00"
+
+
+
+declare -a gpu_list=(
+    "gpu_intr"
+    "cloudgpu1_intr"
+    "ocgpu8a100_intr"
+    "azuregpu1_intr"
+)
+
 
 function help(){
     awk 'NR > 2 {
@@ -33,18 +50,38 @@ function AOI(){
 function init_GPU(){
     module load singularity cuda/12.2u2
 
-    gpu_num=1
-    cpu_num=4
-    session_time="0-01:00:00"
-
-    if [ "${1}" = "intr" ]; then
+    if [ -z ${1} ]; then
         session_mode="gpu_intr"
+    elif [ ! -z ${1} ]; then
+        if printf '%s\n' "${gpu_list[@]}" | grep -qx "${1}"; then
+            session_mode=${1}
+        else
+            echo "GPU:${1} do not exist."
+            exit 1
+        fi
     else
         echo "Do not supported option."
         exit 1
     fi
 
-    srun -p ${session_mode} --gres=gpu:${gpu_num} -c ${cpu_num} --time=${session_time} --pty bash -l
+    echo ${session_mode}
+    srun -p ${session_mode} --gres=gpu:${gpu_num} -c ${cpu_num} --time=${session_time_intr} --pty bash -l
+}
+
+function cintr(){
+	csession_mode="cluster_intr"
+	srun -p ${csession_mode} --pty bash
+	#export PATH=${PATH}:${HOME}/.local/bin
+	#pip3 install --user notebook
+	#jupyter-notebook --ip=0.0.0.0 --port 8888 --no-browser
+}
+
+function notebook(){
+	# ./cmd.sh cintr
+	# ./cmd.sh drun
+	#poetry shell
+	jupyter-notebook --ip=0.0.0.0 --port 8888 --no-browser
+	# and add <hostname>.naist.jp
 }
 
 function dpull(){
@@ -61,15 +98,37 @@ function drun(){
     singularity run --nv ${lenv_NAME}
 }
 
+function exec_intr(){
+    # for interractive job
+    #poetry run python3 ${DIR_ATELIER}/train.py
+    module load singularity cuda/12.2u2
+    echo "exec by intr"
+    . ${INTR_SH}
+}
+
+function run(){
+    module load singularity cuda/12.2u2
+    echo "run sequence"
+    sbatch ${RUN_SH}
+}
 
 if [ "${1}" = "AOI" ]; then
     AOI
+elif [ "${1}" = "cintr" ];then
+	cintr
 elif [ "${1}" = "intr" ]; then
-    init_GPU intr
+    init_GPU ${2}
 elif [ "${1}" = "dpull" ]; then
     dpull
 elif [ "${1}" = "drun" ]; then
     drun
+elif [ "${1}" = "exec_intr" ]; then
+    exec_intr
+elif [ "${1}" = "runb" ]; then
+    module load singularity cuda/12.2u2
+    run
+elif [ "${1}" = "notebook" ]; then
+	notebook
 elif [ "${1}" = "help" ] || [ -z ${1} ]; then
     help
 else

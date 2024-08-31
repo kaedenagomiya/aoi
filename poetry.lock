@@ -2150,6 +2150,16 @@ intel-openmp = "==2021.*"
 tbb = "==2021.*"
 
 [[package]]
+name = "monotonic-align"
+version = "1.0.0"
+description = "Monotonic Alignment Search module"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "monotonic_align-1.0.0.tar.gz", hash = "sha256:10bed2cf6f5f3cab716d1d14064cee4c759cd06e0eba63d199306f0c6839ffb1"},
+]
+
+[[package]]
 name = "more-itertools"
 version = "10.4.0"
 description = "More routines for operating on iterables, beyond itertools"
@@ -4663,4 +4673,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "032cb1b6dd33a6c43f5899c680a267b23c96f9cc6bb4afca71695dc0ee6cd390"
+content-hash = "b859c00c0ad48ced232ece6cd0fd61e0a9b90d97ebea90306879a0eab1447a15"

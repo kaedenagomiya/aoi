@@ -1,4 +1,4 @@
-# usage: poetry run python3 preprocess.py ljspeech data/ljspeech/LJSpeech-1.1/ data/ljspeech/preprocess_recipes
+# usage: poetry run python3 preprocess.py ljspeech data/ljspeech/LJSpeech-1.1/ ./configs
 
 import argparse
 import pathlib

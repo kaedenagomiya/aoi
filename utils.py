@@ -7,12 +7,22 @@
 # MIT License for more details.
 
 import os
+import sys
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
 from torch.nn.utils import weight_norm
 
 import torch
+
+
+def check_package_yet(package_name):
+    if package_name in sys.modules:
+        print(f"'{package_name}' is already imported.")
+        return True
+    else:
+        print(f"'{package_name}' is not imported.")
+        return False
 
 
 def intersperse(lst, item):

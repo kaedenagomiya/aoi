@@ -8,7 +8,7 @@ gpu_name = torch.cuda.get_device_name()
 if gpu_name is None:
     gpu_name = "None"
 
-import set_seed
+import toybox
 import wandb
 from wandb import AlertLevel
 import random
@@ -17,7 +17,7 @@ import random
 RANDOM_SEED=42
 
 # seq train
-set_seed.set_seed(RANDOM_SEED)
+toybox.set_seed(RANDOM_SEED)
 
 total_runs = 5
 

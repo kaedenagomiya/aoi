@@ -1,18 +1,20 @@
 # Custom setting
-logs/
+logs4run/
 test/
 wandb/
 data/*
 !README.md
 test_*
-*.old
 test_mlp
+!test_dataset.json
+*.old
 *.sif
 memo.md
 memo*
 hifi_gan/cp_hifigan
 hifi_gan/cmd.sh
 hifi_gan/run_train.sh
+hifi_gan/logs
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

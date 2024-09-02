@@ -97,7 +97,7 @@ if __name__ == "__main__":
         train_dataset,
         batch_size=config["batch_size"],
         collate_fn=collateFn,
-        num_workers=16,
+        num_workers=config["num_workers"],
     )
 
     val_loader = DataLoader(

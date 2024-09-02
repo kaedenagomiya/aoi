@@ -12,10 +12,10 @@ test_mlp
 *.sif
 memo.md
 memo*
-hifi_gan/cp_hifigan
-hifi_gan/cmd.sh
-hifi_gan/run_train.sh
-hifi_gan/logs
+hifigan/cp_hifigan
+hifigan/cmd.sh
+hifigan/run_train.sh
+hifigan/logs
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

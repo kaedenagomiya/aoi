@@ -1,5 +1,6 @@
 # Custom setting
 logs4run/
+logs4model/
 test/
 wandb/
 data/*

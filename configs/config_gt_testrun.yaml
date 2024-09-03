@@ -1,8 +1,8 @@
 # for train
 model_name: gradtts
-runtime_name: run_test # run_penguin_gt
-log_dir: ./logs4model/gradtts
-ckpt: ./logs4model/gradtts/ckpt
+runtime_name: run_test_intr_2h_e100 # run_penguin_gt
+log_dir: ./logs4model/${model_name}/${runtime_name}
+ckpt: ${log_dir}/ckpt
 train_datalist_path: ./configs/train_dataset.json
 valid_datalist_path: ./configs/valid_dataset.json
 phn2id_path: ./configs/phn2id.json

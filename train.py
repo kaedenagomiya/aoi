@@ -37,8 +37,13 @@ if __name__ == "__main__":
     
     # for init config =======================================================
     print("Initializing config...")
-    with open(args.config) as f:
-        config = yaml.load(f, yaml.SafeLoader)
+    #with open(args.config) as f:
+    #    config = yaml.load(f, yaml.SafeLoader)
+    try:
+        config = toybox.load_yaml_and_expand_var(args.config)
+    except KeyError as e:
+        print(e)
+
     log_dir = pathlib.Path(config["log_dir"])
     model_name = config['model_name']
     if config["device"] == "GPU":

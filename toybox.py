@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 import glob
 import random
+import yaml
 import numpy as np
 import torch
 
@@ -38,3 +39,20 @@ def find_latest_ckpt(ckpt_dir, model_name):
     latest_ckpt = max(ckpt_files, key=extract_epoch_iteration)
 
     return latest_ckpt
+
+
+def load_yaml_and_expand_var(file_path):
+    with open(file_path, 'r') as f:
+        config = yaml.safe_load(f)
+
+    yaml_content = str(config)
+
+    variables_in_yaml = re.findall(r'\$\{(\w+)\}', yaml_content)
+
+    for var in set(variables_in_yaml):
+        if var not in config:
+            raise KeyError(f"Key '{var}' not found in the YAML file.")
+        yaml_content = yaml_content.replace(f'${{{var}}}', config[var])
+
+    expanded_config = yaml.safe_load(yaml_content)
+    return expanded_config

@@ -1,6 +1,6 @@
 # for train
 model_name: gradtts
-runtime_name: run_test_gt
+runtime_name: run_test # run_penguin_gt
 log_dir: ./logs4model/gradtts
 ckpt: ./logs4model/gradtts/ckpt
 train_datalist_path: ./configs/train_dataset.json
@@ -8,14 +8,16 @@ valid_datalist_path: ./configs/valid_dataset.json
 phn2id_path: ./configs/phn2id.json
 
 device: GPU
-random_seed: 42
-epoch_interval: 10000
+num_workers: 16
+epoch_interval: 100 #10000
 max_step: 1700000
+n_timestep4infer: 50
+
+random_seed: 42
 batch_size: 16
 learning_rate: 0.0001
 out_size: 2
-n_timestep4infer: 50
-num_workers: 16
+
 
 # for params of model
 n_mels: 80

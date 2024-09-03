@@ -136,7 +136,8 @@ if __name__ == "__main__":
         start_steps = steps + 1
         model.load_state_dict(state_dict)
     else:
-        sys.exit("No checkpoint files found.")
+        #sys.exit("No checkpoint files found.")
+        print("Warning: No checkpoint files found.")
 
     model = model.cuda()
 

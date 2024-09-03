@@ -23,7 +23,7 @@ INTR_SH="${DIR_ATELIER}/test_intr.sh"
 RUN_SH="${DIR_ATELIER}/run_train.sh"
 
 gpu_num=1
-cpu_num=4
+cpu_num=16
 session_time_intr="0-02:00:00"
 
 

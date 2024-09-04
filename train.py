@@ -225,6 +225,14 @@ if __name__ == "__main__":
                         [epoch, iteration, model.state_dict()],
                         f=ckpt_dir / f"{model_name}_{epoch}_{iteration}.pt",
                     )
+                    # for alert by wandb. --------------------------------------------------------
+                    if flag_wandb == True:
+                        wandb.alert(
+                            title='fin train aoi each epoch',
+                            text=f'<@U052F2QKFMK> learning Now (> w <)q seq epoch:{epoch}, iteration:{iteration}',
+                            level=wandb.AlertLevel.INFO
+                        )
+
 
                 # for restore by wandb. --------------------------------------------------------
                 if flag_wandb == True:
@@ -234,13 +242,6 @@ if __name__ == "__main__":
                         "prior_loss": prior_loss.item(),
                         "diff_loss": diff_loss.item(),
                         }
-                    )
-
-                if flag_wandb == True:
-                    wandb.alert(
-                        title='fin train aoi each epoch',
-                        text=f'<@U052F2QKFMK> fin train seq (> w <)',
-                        level=wandb.AlertLevel.INFO
                     )
 
         # for eval =======================================================
@@ -323,15 +324,23 @@ if __name__ == "__main__":
         )
 
         # for alert by wandb. --------------------------------------------------------
+        """
         if flag_wandb == True:
             wandb.alert(
                 title='fin valid aoi each epoch',
                 text=f'<@U052F2QKFMK> fin valid seq (> w <)',
                 level=wandb.AlertLevel.INFO
             )
+        """
 
 
 if flag_wandb == True:
+    # for alert by wandb. --------------------------------------------------------
+    wandb.alert(
+        title='fin TRAIN aoi each epoch',
+        text=f'<@U052F2QKFMK> fin valid seq (> w <)',
+        level=wandb.AlertLevel.INFO
+    )
     wandb.finish()
 
 print('fin')

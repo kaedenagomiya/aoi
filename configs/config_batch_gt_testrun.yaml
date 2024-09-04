@@ -1,6 +1,6 @@
 # for train
 model_name: gradtts
-runtime_name: run_test_intr_2h_e100 # run_penguin_gt
+runtime_name: run_test_batch_24h_maybee480 # run_penguin_gt
 log_dir: ./logs4model/${model_name}/${runtime_name}
 ckpt: ${log_dir}/ckpt
 train_datalist_path: ./configs/train_dataset.json
@@ -9,7 +9,7 @@ phn2id_path: ./configs/phn2id.json
 
 device: GPU
 num_workers: 16
-epoch_interval: 100 #10000
+epoch_interval: 480 #46 per 2h original:10000
 max_step: 1700000
 n_timestep4infer: 50
 

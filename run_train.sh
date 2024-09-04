@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH -J btrain_gt_testrun
 #SBATCH -p gpu_long
 #SBATCH -n 1
 #SBATCH -c 16

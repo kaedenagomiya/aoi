@@ -41,7 +41,9 @@ class Downsample(BaseModule):
 
 
 class ConvBlock(BaseModule):
-
+    """
+    final block to clean data in GradLogPEstimator2d
+    """
     def __init__(self, dim, dim_out, groups=8):
         super(ConvBlock, self).__init__()
         self.block = torch.nn.Sequential(

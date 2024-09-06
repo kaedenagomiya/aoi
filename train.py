@@ -220,19 +220,20 @@ if __name__ == "__main__":
                     progress_bar.set_description(msg)
 
                 iteration += 1
+                # for alert by wandb. --------------------------------------------------------
+                if (iteration >= config["max_step"]//4) and (flag_wandb == True):
+                    wandb.alert(
+                        title='fin train aoi each epoch',
+                        text=f'<@U052F2QKFMK> learning Now (> w <)q seq epoch:{epoch}, iteration:{iteration}',
+                        level=wandb.AlertLevel.INFO
+                    )
+
                 if iteration >= config["max_step"]:
                     torch.save(
                         [epoch, iteration, model.state_dict()],
                         f=ckpt_dir / f"{model_name}_{epoch}_{iteration}.pt",
                     )
-                    # for alert by wandb. --------------------------------------------------------
-                    if flag_wandb == True:
-                        wandb.alert(
-                            title='fin train aoi each epoch',
-                            text=f'<@U052F2QKFMK> learning Now (> w <)q seq epoch:{epoch}, iteration:{iteration}',
-                            level=wandb.AlertLevel.INFO
-                        )
-
+                    
 
                 # for restore by wandb. --------------------------------------------------------
                 if flag_wandb == True:

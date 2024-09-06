@@ -42,6 +42,8 @@ if __name__ == "__main__":
     #    config = yaml.load(f, yaml.SafeLoader)
     try:
         config = toybox.load_yaml_and_expand_var(args.config)
+        print("log_dir:" + str(config["log_dir"]))
+        print("ckpt_dir:" + str(config["ckpt"]))
     except KeyError as e:
         print(e)
 
@@ -226,7 +228,7 @@ if __name__ == "__main__":
                 # for alert by wandb. --------------------------------------------------------
                 if (iteration >= config["max_step"]//4) and (flag_wandb == True):
                     wandb.alert(
-                        title='fin train aoi each epoch',
+                        title=f'fin train aoi {model_name} each epoch',
                         text=f'<@U052F2QKFMK> learning Now (> w <)q seq epoch:{epoch}, iteration:{iteration}',
                         level=wandb.AlertLevel.INFO
                     )

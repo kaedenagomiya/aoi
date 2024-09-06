@@ -1,6 +1,6 @@
 # for train
 model_name: gradtts
-runtime_name: run_test_batch_24h_maybee480 # run_penguin_gt
+runtime_name: run_test_batch_24h_maybee480
 log_dir: ./logs4model/${model_name}/${runtime_name}
 ckpt: ${log_dir}/ckpt
 train_datalist_path: ./configs/train_dataset.json

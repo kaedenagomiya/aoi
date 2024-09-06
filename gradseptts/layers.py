@@ -85,10 +85,10 @@ class LinearAttention(BaseModule):
         super().__init__()
         self.heads = heads
         self.hidden_dim = dim_head * heads
-        self.to_q = torch.nn.Conv2d(dim, self.hidden_dim, 1, 1, 0, 1, False)
-        self.to_k = torch.nn.Conv2d(dim, self.hidden_dim, 1, 1, 0, 1, False)
-        self.to_v = torch.nn.Conv2d(dim, self.hidden_dim, 1, 1, 0, 1, False)
-        self.to_out = torch.nn.Conv2d(self.hidden_dim, dim, 1, 1, 0, 1)
+        self.to_q = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)
+        self.to_k = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)
+        self.to_v = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)
+        self.to_out = torch.nn.Conv2d(self.hidden_dim, dim, 1)
 
     def forward(self, x):
         b, c, h, w = x.shape

@@ -10,7 +10,7 @@ import math
 import torch
 from torch import nn
 
-from .layer import (ResnetBlock,
+from .layers import (ResnetBlock,
                     LinearAttention)
 from .base import BaseModule
 

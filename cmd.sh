@@ -20,7 +20,9 @@ lenv_URL="docker://nagomiya/env_aoi:latest"
 lenv_NAME="env_aoi_latest.sif"
 DIR_ATELIER="/work/sora-sa/aoi"
 INTR_SH="${DIR_ATELIER}/test_intr.sh"
-RUN_SH="${DIR_ATELIER}/run_train.sh"
+RUN_SH_GT="${DIR_ATELIER}/run_train_gt.sh"
+RUN_SH_SEPGT="${DIR_ATELIER}/run_train_sepgt.sh"
+RUN_SH_tfk="${DIR_ATELIER}/run_train_tfk.sh"
 
 gpu_num=1
 cpu_num=16
@@ -108,7 +110,28 @@ function exec_intr(){
 
 function run(){
     module load singularity cuda/12.2u2
+
+    if [ -z ${1} ]; then
+        echo "You need to specify option."
+        exit 1
+    elif [ ! -z ${1} ]; then
+        if [ ${1} == "gt" ]; then
+            RUN_SH=${RUN_SH_GT}
+        elif [ ${1} == "sepgt" ]; then
+            RUN_SH=${RUN_SH_SEPGT}
+        elif [ ${1} == "tfk" ]; then
+            RUN_SH=${RUN_SH_tfk}
+        else
+            echo "Do not supported option"
+            exit 1
+        fi
+    else
+        echo "Do not supported option."
+        exit 1
+    fi
+    
     echo "run sequence"
+    echo "${RUN_SH}"
     sbatch ${RUN_SH}
 }
 
@@ -126,7 +149,7 @@ elif [ "${1}" = "exec_intr" ]; then
     exec_intr
 elif [ "${1}" = "runb" ]; then
     module load singularity cuda/12.2u2
-    run
+    run ${2}
 elif [ "${1}" = "notebook" ]; then
 	notebook
 elif [ "${1}" = "help" ] || [ -z ${1} ]; then

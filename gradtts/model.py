@@ -128,6 +128,100 @@ class GradTTS(BaseModule):
 
         return encoder_outputs, decoder_outputs, attn[:, :, :y_max_length]
 
+
+    @torch.no_grad()
+    def forward_streaming(self,
+                          x,
+                          x_lengths,
+                          n_timesteps,
+                          temperature=1.0,
+                          stoc=False,
+                          spk=None,
+                          length_scale=1.0,
+                          out_size=None,
+                          solver='original'):
+        #    if chunk_method == 'simple':
+        #        return self.forward_streaming_simple_chunk(x, x_lengths,
+        #                                                   n_timesteps,
+        #                                                   temperature, stoc, spk,
+        #                                                   length_scale, out_size,
+        #                                                   solver)
+        #    elif chunk_method == 'padding':
+        #        return self.forward_streaming_padding_chunk(
+        #            x, x_lengths, n_timesteps, temperature, stoc, spk,
+        #            length_scale, out_size, solver)
+        #    else:
+        #        raise ValueError(f'Wrong chunk method: {chunk_method}!')
+
+        #@torch.no_grad()
+        #def forward_streaming_padding_chunk(self, x, x_lengths, n_timesteps,
+        #                                    temperature, stoc, spk, length_scale,
+        #                                    out_size, solver):
+        """
+        Generates mel-spectrogram from text. Returns:
+            1. encoder outputs
+            2. decoder outputs
+            3. generated alignment
+        
+        Args:
+            x (torch.Tensor): batch of texts, converted to a tensor with phoneme embedding ids.
+            x_lengths (torch.Tensor): lengths of texts in batch.
+            n_timesteps (int): number of steps to use for reverse diffusion in decoder.
+            temperature (float, optional): controls variance of terminal distribution.
+            stoc (bool, optional): flag that adds stochastic term to the decoder sampler.
+                Usually, does not provide synthesis improvements.
+            length_scale (float, optional): controls speech pace.
+                Increase value to slow down generated speech and vice versa.
+        """
+        x, x_lengths = self.relocate_input([x, x_lengths])
+        assert x.shape[0] == 1  # streaming inference only support batch size 1
+        if self.n_spks > 1:
+            # Get speaker embedding
+            spk = self.spk_emb(spk)
+
+        # Get encoder_outputs `mu_x` and log-scaled token durations `logw`
+        mu_x, logw, x_mask = self.encoder(x, x_lengths, spk)
+        w = (torch.exp(logw) - 1) * x_mask
+        w_ceil = torch.ceil(w * length_scale).squeeze(1)
+        y_lengths = torch.clamp(torch.sum(w_ceil, dim=1), min=0).long()
+        y_max_length = int(y_lengths.max())
+        y_max_length_ = fix_len_compatibility(y_max_length)
+        out_size = fix_len_compatibility(out_size)
+
+        # Using obtained durations `w` construct alignment map `attn`
+        y_mask = sequence_mask(y_lengths,
+                               y_max_length_).unsqueeze(1).to(x_mask.dtype)
+        attn_mask = x_mask.unsqueeze(-1) * y_mask.unsqueeze(2)
+        attn = generate_path(w_ceil, attn_mask.squeeze(1))
+        (num_chunks, chunk_lengths, start_frames, end_frames, lpad,
+         rpad) = split_durs(w_ceil, out_size)
+        for i in range(num_chunks):
+            lp = lpad[i]
+            rp = rpad[i]
+            l = chunk_lengths[i]
+
+            # start_idx should be divisible by downsampling factor
+            start_idx = fix_len_compatibility(start_frames[i] - lp,
+                                              type='floor')
+            # adjust left padding part according to start_idx
+            lp += start_frames[i] - lp - start_idx
+            end_idx = min(y_max_length_,
+                          fix_len_compatibility(end_frames[i] + rp))
+
+            y_mask_cut = y_mask[:, :, start_idx:end_idx]
+            attn_cut = attn[:, :, start_idx:end_idx]
+            mu_y_cut = torch.matmul(attn_cut.transpose(1, 2),
+                                    mu_x.transpose(1, 2))
+            mu_y_cut = mu_y_cut.transpose(1, 2)
+            z_cut = mu_y_cut + torch.randn_like(
+                mu_y_cut, device=mu_y_cut.device) / temperature
+            decoder_output_cut = self.decoder(z_cut, y_mask_cut, mu_y_cut,
+                                              n_timesteps, stoc, spk, solver)
+            yield (mu_y_cut[:, :, lp:lp + l],
+                   decoder_output_cut[:, :, lp:lp + l], attn_cut[:, :,
+                                                                 lp:lp + l])
+
+
     def compute_loss(self,
                      x,
                      x_lengths,
@@ -247,3 +341,38 @@ class GradTTS(BaseModule):
         prior_loss = prior_loss / (torch.sum(y_mask) * self.n_feats)
 
         return dur_loss, prior_loss, diff_loss
+
+
+def split_durs(durations, chunk_frames):
+    """
+
+    Args:
+        durations (_type_): duration for each token. Shape (1,tx)
+        chunk_frames (_type_): frames per chunk.
+
+    """
+    durations = durations.flatten()
+    cum_sum = durations.cumsum(dim=0).int()
+
+    idx = torch.div(cum_sum, chunk_frames, rounding_mode='trunc').int()
+    start_token_idx = 0
+    num_chunks = idx.max() + 1
+    lengths = torch.zeros((num_chunks),
+                          device=durations.device,
+                          dtype=torch.int)
+    lpad = torch.zeros_like(lengths, device=lengths.device)
+    rpad = torch.zeros_like(lengths, device=lengths.device)
+    for i in range(num_chunks):
+        duration_chunk_mask = i == idx
+        duration_chunk_tokens = duration_chunk_mask.sum()
+        duration_chunk = durations * duration_chunk_mask
+        duration_chunk_frames = duration_chunk.sum()
+        if i > 0:
+            lpad[i] = durations[start_token_idx - 1]
+        if i < num_chunks - 1:
+            rpad[i] = durations[start_token_idx + duration_chunk_tokens]
+        lengths[i] = duration_chunk_frames
+        start_token_idx += duration_chunk_tokens
+    end_frames = lengths.cumsum(dim=0)
+    start_frames = end_frames - lengths
+    return num_chunks, lengths, start_frames, end_frames, lpad, rpad

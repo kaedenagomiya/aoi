@@ -25,6 +25,7 @@ import toybox
 
 # import models
 from gradtts import GradTTS
+from gradseptts import GradSepTTS
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -114,6 +115,8 @@ if __name__ == "__main__":
     print("Initializing model...")
     if model_name == "gradtts":
         model = GradTTS.build_model(config, train_dataset.get_vocab_size())
+    elif model_name == "gradseptts":
+        model = GradSepTTS.build_model(config, train_dataset.get_vocab_size())
     else:
         raise ValueError(f"Error: '{model_name}' is not supported")
     print('Number of encoder + duration predictor parameters: %.2fm' % (model.encoder.nparams/1e6))

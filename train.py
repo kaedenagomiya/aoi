@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
                 iteration += 1
                 # for alert by wandb. --------------------------------------------------------
-                if (iteration >= config["max_step"]//4) and (flag_wandb == True):
+                if (flag_wandb == True) and (iteration >= config["max_step"]) and (iteration % 10000 == 0):
                     wandb.alert(
                         title=f'fin train aoi {model_name} each epoch',
                         text=f'<@U052F2QKFMK> learning Now (> w <)q seq epoch:{epoch}, iteration:{iteration}',

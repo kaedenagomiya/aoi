@@ -12,7 +12,8 @@
 #   dpull: get my container_image from dockerhub
 #   drun: run code with singularity
 #   exec_intr: only use interactive job
-#   runb: run train by batchjob
+#   runb <model_name>: run train by batchjob
+#       option: gt, sepgt, tfk
 #   help: descript about usage this script
 
 

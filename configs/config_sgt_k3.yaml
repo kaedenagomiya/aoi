@@ -3,7 +3,7 @@ runtime_name: run_test_sgt_k3
 synth_kernel: 3
 
 log_dir: ./logs4model/${model_name}/${runtime_name}
-ckpt: ${log_dir}/ckpt
+ckpt: ./logs4model/${model_name}/${runtime_name}/ckpt
 train_datalist_path: ./configs/train_dataset.json
 valid_datalist_path: ./configs/valid_dataset.json
 phn2id_path: ./configs/phn2id.json
@@ -11,7 +11,7 @@ phn2id_path: ./configs/phn2id.json
 device: GPU
 num_workers: 16
 epoch_interval: 500
-max_step: 1700000
+max_step: 10000 #1700000
 n_timestep4infer: 50
 
 random_seed: 42

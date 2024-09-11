@@ -42,6 +42,10 @@ def find_latest_ckpt(ckpt_dir, model_name):
 
 
 def load_yaml_and_expand_var(file_path):
+    """
+    usage:
+        config = toybox.load_yaml_and_expand_var(config_path:str)
+    """
     with open(file_path, 'r') as f:
         config = yaml.safe_load(f)
 

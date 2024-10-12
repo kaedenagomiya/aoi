@@ -26,8 +26,8 @@ RUN_SH_SEPGT="${DIR_ATELIER}/run_train_sepgt.sh"
 RUN_SH_tfk="${DIR_ATELIER}/run_train_tfk.sh"
 
 gpu_num=1
-cpu_num=16
-session_time_intr="0-02:00:00"
+cpu_num=4
+session_time_intr="0-04:00:00"
 
 
 
@@ -48,6 +48,10 @@ function help(){
 
 function AOI(){
     echo "Welcome to AOI system(> w <)b"
+}
+
+function cap_dir(){
+	du -h --exclude=.venv --exclude=wandb --exclude=.git
 }
 
 function init_GPU(){
@@ -153,6 +157,8 @@ elif [ "${1}" = "runb" ]; then
     run ${2}
 elif [ "${1}" = "notebook" ]; then
 	notebook
+elif [ "${1}" = "cap_dir" ]; then
+	cap_dir
 elif [ "${1}" = "help" ] || [ -z ${1} ]; then
     help
 else

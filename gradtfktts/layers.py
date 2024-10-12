@@ -10,37 +10,56 @@ class Mish(BaseModule):
         return x * torch.tanh(torch.nn.functional.softplus(x))
 
 
-class SeparableConv2d(BaseModule):
+class TimeFreqKernelConv2d(BaseModule):
+    """
+    Conv2d API
+    -----------
+    torch.nn.Conv2d(in_channels, out_channels,
+                    kernel_size,stride=1, padding=0, 
+                    dilation=1, groups=1, bias=True,
+                    padding_mode='zeros', device=None, dtype=None)
+    Ref.[nn.Conv2d](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)
+    """
 
     def __init__(self,
                  in_channels,
                  out_channels,
-                 kernel_size=1,
+                 tf_kernel=(3,3),
                  stride=1,
                  padding=0,
                  dilation=1,
                  bias=True):
-        super(SeparableConv2d, self).__init__()
+        # def __init__(self, dim, mixer_kernel, dilation = 1):
+        super(TimeFreqKernelConv2d, self).__init__()
 
-        self.conv1 = nn.Conv2d(in_channels,
-                               in_channels,
-                               kernel_size,
-                               stride,
-                               padding,
-                               dilation,
-                               groups=in_channels,
-                               bias=bias)
+        """
+        self.conv1 = nn.Conv2d(in_channels,in_channels,
+                               kernel_size,stride,padding,dilation,
+                               groups=in_channels,bias=bias)
+        """
+        f, t = tf_kernel
+        self.tfkconv_f = nn.Conv2d(in_channels,in_channels,
+                                    kernel_size=(f, 1), 
+                                    padding='same',
+                                    groups=in_channels,
+                                    dilation=dilation)
+        self.tfkconv_t = nn.Conv2d(in_channels,in_channels,
+                                    kernel_size=(1, t),
+                                    padding='same',
+                                    groups=in_channels, 
+                                    dilation=dilation)
         self.pointwise = nn.Conv2d(in_channels,
-                                   out_channels,
-                                   1,
-                                   1,
-                                   0,
-                                   1,
-                                   1,
-                                   bias=bias)
+                                    out_channels,
+                                    kernel_size=1,
+                                    stride=1,
+                                    padding=0,
+                                    dilation=1,
+                                    groups=1,
+                                    bias=bias)
 
     def forward(self, x):
-        x = self.conv1(x)
+        #x = self.conv1(x)
+        x = self.tfkconv_f(x) + self.tfkconv_t(x)
         x = self.pointwise(x)
         return x
 
@@ -50,7 +69,8 @@ class SeparableBlock(BaseModule):
     def __init__(self, dim, dim_out, groups=8):
         super().__init__()
         self.block = torch.nn.Sequential(
-            SeparableConv2d(dim, dim_out, 3, padding=1),
+            # (in_channel, out_channel, tf_kernel=(f,t))
+            TimeFreqKernelConv2d(dim, dim_out, tf_kernel=(3,3), padding=1),
             nn.GroupNorm(groups, dim_out), Mish())
 
     def forward(self, x, mask):

@@ -1,6 +1,7 @@
 # Custom setting
 logs4run/
 logs4model/
+result4eval/
 test/
 wandb/
 data/*
@@ -16,6 +17,7 @@ hifigan/cp_hifigan
 hifigan/cmd.sh
 hifigan/run_train.sh
 hifigan/logs
+hifigan/official_pretrained/
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:

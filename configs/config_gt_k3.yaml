@@ -1,5 +1,6 @@
-model_name: gradseptts
-runtime_name: run_sgt_k3
+# for train
+model_name: gradtts
+runtime_name: run_gt_k3
 synth_kernel: 3
 
 log_dir: ./logs4model/${model_name}/${runtime_name}
@@ -10,7 +11,7 @@ phn2id_path: ./configs/phn2id.json
 
 device: GPU
 num_workers: 16
-epoch_interval: 500
+epoch_interval: 500 #46 per 2h original:10000
 max_step: 2000000 #1700000
 n_timestep4infer: 50
 
@@ -19,6 +20,8 @@ batch_size: 16
 learning_rate: 0.0001
 out_size: 2
 
+
+# for params of model
 n_mels: 80
 n_fft: 1024
 sample_rate: 22050

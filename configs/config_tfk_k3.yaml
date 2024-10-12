@@ -1,5 +1,5 @@
-model_name: gradseptts
-runtime_name: run_sgt_k3
+model_name: gradtfktts
+runtime_name: run_tfk_k3
 synth_kernel: 3
 
 log_dir: ./logs4model/${model_name}/${runtime_name}

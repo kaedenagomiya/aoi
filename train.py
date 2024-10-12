@@ -171,6 +171,9 @@ if __name__ == "__main__":
     print("Start training...")
     iteration = start_steps
     out_size = config["out_size"] * config["sample_rate"] // config["hop_size"]
+    best_dur_loss = float('inf')
+    best_prior_loss = float('inf')
+    best_diffusion_loss = float('inf')
 
     for epoch in range(start_epoch, start_epoch + config["epoch_interval"]):
         model.train()
@@ -236,6 +239,13 @@ if __name__ == "__main__":
                         level=wandb.AlertLevel.INFO
                     )
 
+                # for save .pt ==================================================================
+                if np.log10(iteration).is_integer():
+                    torch.save(
+                        [epoch, iteration, model.state_dict()],
+                        f=ckpt_dir / f"{model_name}_{epoch}_{iteration}.pt",
+                    )
+                
                 if iteration >= config["max_step"]:
                     torch.save(
                         [epoch, iteration, model.state_dict()],
@@ -270,19 +280,49 @@ if __name__ == "__main__":
                 all_dur_loss.append(dur_loss)
                 all_prior_loss.append(prior_loss)
                 all_diffusion_loss.append(diff_loss)
+                
             average_dur_loss = sum(all_dur_loss) / len(all_dur_loss)
             average_prior_loss = sum(all_prior_loss) / len(all_prior_loss)
             average_diffusion_loss = sum(all_diffusion_loss) / len(all_diffusion_loss)
+
             logger.add_scalar("val/duration_loss", average_dur_loss, global_step=epoch)
             logger.add_scalar("val/prior_loss", average_prior_loss, global_step=epoch)
             logger.add_scalar(
                 "val/diffusion_loss", average_diffusion_loss, global_step=epoch
             )
+            
             print(
                 f"val duration_loss: {average_dur_loss}, "
                 f"prior_loss: {average_prior_loss}, "
                 f"diffusion_loss: {average_diffusion_loss}"
             )
+
+            # for store best score
+            if (average_diffusion_loss < best_diffusion_loss or
+                average_dur_loss < best_dur_loss or
+                average_prior_loss < best_prior_loss):
+
+                if average_diffusion_loss < best_diffusion_loss:
+                    best_diffusion_loss = average_diffusion_loss
+                
+                if average_dur_loss < best_dur_loss:
+                    best_dur_loss = average_dur_loss
+                
+                if average_prior_loss < best_prior_loss:
+                    best_prior_loss = average_prior_loss
+
+                torch.save(
+                    [epoch, iteration, model.state_dict()],
+                    f=ckpt_dir / f"{model_name}_{epoch}_{iteration}.pt"
+                )
+
+                print(
+                    f"New best model saved: "
+                    f"duration_loss: {best_dur_loss}, "
+                    f"prior_loss: {best_prior_loss}, "
+                    f"diffusion_loss: {best_diffusion_loss}"
+                )
+
             # for restore by wandb. --------------------------------------------------------
             if flag_wandb == True:
                 wandb.log(

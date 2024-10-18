@@ -27,6 +27,7 @@ import toybox
 from gradtts import GradTTS
 from gradseptts import GradSepTTS
 from gradtfktts import GradTFKTTS
+from gradtfkfultts import GradTFKFULTTS
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -42,6 +43,8 @@ if __name__ == "__main__":
     #with open(args.config) as f:
     #    config = yaml.load(f, yaml.SafeLoader)
     try:
+        print(args.config)
+        print(str(type(args.config)))
         config = toybox.load_yaml_and_expand_var(args.config)
         print("log_dir:" + str(config["log_dir"]))
         print("ckpt_dir:" + str(config["ckpt"]))
@@ -122,6 +125,8 @@ if __name__ == "__main__":
         model = GradSepTTS.build_model(config, train_dataset.get_vocab_size())
     elif model_name == "gradtfktts":
         model = GradTFKTTS.build_model(config, train_dataset.get_vocab_size())
+    elif model_name == "gradtfkfultts":
+        model = GradTFKFULTTS.build_model(config, train_dataset.get_vocab_size())
     else:
         raise ValueError(f"Error: '{model_name}' is not supported")
     print('Number of encoder + duration predictor parameters: %.2fm' % (model.encoder.nparams/1e6))
@@ -240,7 +245,7 @@ if __name__ == "__main__":
                     )
 
                 # for save .pt ==================================================================
-                if np.log10(iteration).is_integer():
+                if np.log10(iteration).is_integer() == True:
                     torch.save(
                         [epoch, iteration, model.state_dict()],
                         f=ckpt_dir / f"{model_name}_{epoch}_{iteration}.pt",

@@ -10,7 +10,7 @@ phn2id_path: ./configs/phn2id.json
 
 device: GPU
 num_workers: 16
-epoch_interval: 500
+epoch_interval: 1
 max_step: 2000000 #1700000
 n_timestep4infer: 50
 

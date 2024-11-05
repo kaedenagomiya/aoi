@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J btrain_tkf_run
-#SBATCH -p gpu_short
+#SBATCH -p gpu_long
 #SBATCH -n 1
 #SBATCH -c 16
 #SBATCH --gres=gpu:1
-#SBATCH --time=00-01:00:00
+#SBATCH --time=01-12:00:00
 #SBATCH --mail-user=nagomiya75328@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH -o /work/sora-sa/aoi/logs4run/stdout-%J.out

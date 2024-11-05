@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J btrain_sgt_run
-#SBATCH -p gpu_short
+#SBATCH -p gpu_long
 #SBATCH -n 1
 #SBATCH -c 16
 #SBATCH --gres=gpu:1

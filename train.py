@@ -27,6 +27,7 @@ import toybox
 from gradtts import GradTTS
 from gradseptts import GradSepTTS
 from gradtfktts import GradTFKTTS
+from gradtfk5tts import GradTFKTTS as GradTFK5TTS
 from gradtfkfultts import GradTFKFULTTS
 
 def get_args():
@@ -125,6 +126,8 @@ if __name__ == "__main__":
         model = GradSepTTS.build_model(config, train_dataset.get_vocab_size())
     elif model_name == "gradtfktts":
         model = GradTFKTTS.build_model(config, train_dataset.get_vocab_size())
+    elif model_name == "gradtfk5tts":
+        model = GradTFK5TTS.build_model(config, train_dataset.get_vocab_size())
     elif model_name == "gradtfkfultts":
         model = GradTFKFULTTS.build_model(config, train_dataset.get_vocab_size())
     else:

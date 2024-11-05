@@ -24,7 +24,7 @@ class TimeFreqKernelConv2d(BaseModule):
     def __init__(self,
                  in_channels,
                  out_channels,
-                 tf_kernel=(3,3),
+                 tf_kernel=(5,5),
                  stride=1,
                  padding=0,
                  dilation=1,
@@ -70,7 +70,7 @@ class SeparableBlock(BaseModule):
         super().__init__()
         self.block = torch.nn.Sequential(
             # (in_channel, out_channel, tf_kernel=(f,t))
-            TimeFreqKernelConv2d(dim, dim_out, tf_kernel=(3,3), padding=1),
+            TimeFreqKernelConv2d(dim, dim_out, tf_kernel=(5,5), padding=1),
             nn.GroupNorm(groups, dim_out), Mish())
 
     def forward(self, x, mask):

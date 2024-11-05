@@ -24,6 +24,7 @@ INTR_SH="${DIR_ATELIER}/test_intr.sh"
 RUN_SH_GT="${DIR_ATELIER}/run_train_gt.sh"
 RUN_SH_SEPGT="${DIR_ATELIER}/run_train_sepgt.sh"
 RUN_SH_tfk="${DIR_ATELIER}/run_train_tfk.sh"
+RUN_SH_tfk5="${DIR_ATELIER}/run_train_tfk5.sh"
 RUN_SH_tfkful="${DIR_ATELIER}/run_train_tfkful.sh"
 
 gpu_num=1
@@ -127,6 +128,8 @@ function run(){
             RUN_SH=${RUN_SH_SEPGT}
         elif [ ${1} == "tfk" ]; then
             RUN_SH=${RUN_SH_tfk}
+        elif [ ${1} == "tfk5" ]; then
+            RUN_SH=${RUN_SH_tfk5}
         elif [ ${1} == "tfkful" ]; then
             RUN_SH=${RUN_SH_tfkful}
         else

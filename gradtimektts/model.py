@@ -20,7 +20,7 @@ from .utils import (sequence_mask,
                     duration_loss,
                     fix_len_compatibility)
 
-class GradTFKTTS(BaseModule):
+class GradTimeKTTS(BaseModule):
 
     def __init__(self, n_vocab, n_spks, spk_emb_dim, n_enc_channels,
                  filter_channels, filter_channels_dp, n_heads, n_enc_layers,

@@ -28,6 +28,7 @@ from gradtts import GradTTS
 from gradseptts import GradSepTTS
 from gradtfktts import GradTFKTTS
 from gradtfk5tts import GradTFKTTS as GradTFK5TTS
+from gradtimektts import GradTimeKTTS
 from gradtfkfultts import GradTFKFULTTS
 
 def get_args():
@@ -130,6 +131,8 @@ if __name__ == "__main__":
         model = GradTFK5TTS.build_model(config, train_dataset.get_vocab_size())
     elif model_name == "gradtfkfultts":
         model = GradTFKFULTTS.build_model(config, train_dataset.get_vocab_size())
+    elif model_name == "gradtimektts":
+        model = GradTimeKTTS.build_model(config, train_dataset.get_vocab_size())
     else:
         raise ValueError(f"Error: '{model_name}' is not supported")
     print('Number of encoder + duration predictor parameters: %.2fm' % (model.encoder.nparams/1e6))

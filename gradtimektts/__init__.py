@@ -6,4 +6,4 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # MIT License for more details.
 
-from .model import GradTFKTTS
+from .model import GradTimeKTTS

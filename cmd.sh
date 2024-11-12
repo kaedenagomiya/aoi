@@ -25,6 +25,7 @@ RUN_SH_GT="${DIR_ATELIER}/run_train_gt.sh"
 RUN_SH_SEPGT="${DIR_ATELIER}/run_train_sepgt.sh"
 RUN_SH_tfk="${DIR_ATELIER}/run_train_tfk.sh"
 RUN_SH_tfk5="${DIR_ATELIER}/run_train_tfk5.sh"
+RUN_SH_timek="${DIR_ATELIER}/run_train_timek.sh"
 RUN_SH_tfkful="${DIR_ATELIER}/run_train_tfkful.sh"
 
 gpu_num=1
@@ -132,6 +133,8 @@ function run(){
             RUN_SH=${RUN_SH_tfk5}
         elif [ ${1} == "tfkful" ]; then
             RUN_SH=${RUN_SH_tfkful}
+        elif [ ${1} == "timek" ]; then
+            RUN_SH=${RUN_SH_timek}
         else
             echo "Do not supported option"
             exit 1

@@ -43,11 +43,13 @@ class TimeFreqKernelConv2d(BaseModule):
                                     padding='same',
                                     groups=in_channels,
                                     dilation=dilation)
+        """
         self.tfkconv_t = nn.Conv2d(in_channels,in_channels,
                                     kernel_size=(1, t),
                                     padding='same',
                                     groups=in_channels, 
                                     dilation=dilation)
+        """
         self.pointwise = nn.Conv2d(in_channels,
                                     out_channels,
                                     kernel_size=1,
@@ -59,7 +61,8 @@ class TimeFreqKernelConv2d(BaseModule):
 
     def forward(self, x):
         #x = self.conv1(x)
-        x = self.tfkconv_f(x) + self.tfkconv_t(x)
+        #x = self.tfkconv_f(x) + self.tfkconv_t(x)
+        x = self.tfkconv_f(x)
         x = self.pointwise(x)
         return x
 

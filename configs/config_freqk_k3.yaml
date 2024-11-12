@@ -1,0 +1,42 @@
+model_name: gradfreqktts
+runtime_name: run_freqk_k3
+synth_kernel: 3
+
+log_dir: ./logs4model/${model_name}/${runtime_name}
+ckpt: ./logs4model/${model_name}/${runtime_name}/ckpt
+train_datalist_path: ./configs/train_dataset.json
+valid_datalist_path: ./configs/valid_dataset.json
+phn2id_path: ./configs/phn2id.json
+
+device: GPU
+num_workers: 16
+epoch_interval: 500
+max_step: 2000000 #1700000
+n_timestep4infer: 50
+
+random_seed: 1234
+batch_size: 16
+learning_rate: 0.0001
+out_size: 2
+
+n_mels: 80
+n_fft: 1024
+sample_rate: 22050
+hop_size: 256
+win_size: 1024
+f_min: 0
+f_max: 8000
+
+n_enc_channels: 128
+filter_channels: 512
+filter_channels_dp: 256
+n_enc_layers: 6
+enc_kernel: 3
+enc_dropout: 0.1
+n_heads: 2
+window_size: 4
+
+dec_dim: 64
+beta_min: 0.05
+beta_max: 20.0
+pe_scale: 1000

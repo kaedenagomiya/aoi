@@ -2,6 +2,8 @@
 logs4run/
 logs4model/
 result4eval/
+result4nixeval/
+infer4colb
 test/
 wandb/
 data/*
@@ -11,6 +13,7 @@ test_mlp
 !test_dataset.json
 *.old
 *.sif
+*.tar
 memo.md
 memo*
 hifigan/cp_hifigan

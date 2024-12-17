@@ -9,12 +9,33 @@
 # Arguments:
 #   AOI: toy command
 #   intr <gpu_session>: get interactive gpu session
+# 		session: default-> gpu_intr
+# 	
+# 	cintr: get intractive cpu cluster session
+#	runb <model_name>: run train by batchjob
+# 		option:
+# 			<model_name>:
 #   dpull: get my container_image from dockerhub
-#   drun: run code with singularity
+#   drun: run container_environment with singularity
 #   exec_intr: only use interactive job
-#   runb <model_name>: run train by batchjob
-#       option: gt, sepgt, tfk
+# 	notebook: run jupyternotebook server
+#   cap_dir: check directory size
+# 		exclude: .venv, .git, wandb
 #   help: descript about usage this script
+# Usage:
+# 	- To run environment:
+# 		```
+#		$ ./cmd.sh <intr or cintr>
+# 		$ ./cmd.sh drun
+# 		$ poetry shell
+# 		if you want to run jupyternotebook server
+# 		$ ./cmd.sh notebook
+#		```
+# 	- To run batch train:
+# 		```
+# 		$ ./cmd.sh runb <model_name>
+#		```
+
 
 
 lenv_URL="docker://nagomiya/env_aoi:latest"
@@ -81,7 +102,7 @@ function init_GPU(){
 
 function cintr(){
 	csession_mode="cluster_intr"
-	srun -p ${csession_mode} --pty bash
+	srun -p ${csession_mode} -c ${cpu_num} --pty bash
 	#export PATH=${PATH}:${HOME}/.local/bin
 	#pip3 install --user notebook
 	#jupyter-notebook --ip=0.0.0.0 --port 8888 --no-browser

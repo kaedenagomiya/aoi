@@ -4,8 +4,10 @@ from pathlib import Path
 import glob
 import random
 import yaml
+import math
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
 
 def set_seed(seed):
     random.seed(seed)
@@ -61,3 +63,105 @@ def load_yaml_and_expand_var(file_path):
 
     expanded_config = yaml.safe_load(yaml_content)
     return expanded_config
+
+
+# for plot
+
+def plot_audio(audio, samplerate, title='time-domain waveform'):
+    """
+    usage:
+        # audio is [channel, time(num_frames)] ex.torch.Size([1, 68608])
+        # audio[0,:]: list of 1ch audio data
+        # audio.shape[1]: int value of 1ch audio data length
+        audio, sample_rate = torchaudio.load(str(iwav_path))
+        %matplotlib inline
+        plot_audio(audio, sample_rate)
+    """
+    # transform to mono
+    channel = 0
+    audio = audio[channel,:].view(1,-1)
+    # to numpy
+    audio = audio.to('cpu').detach().numpy().copy()
+    time = np.linspace(0., audio.shape[1]/samplerate, audio.shape[1])
+
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.plot(time, audio[0, :])
+    ax.set_title(title, fontsize=20, y=-0.12)
+    ax.tick_params(direction='in')
+    #ax.set_xlim(0, 3)
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Amp')
+    #ax.legend()
+    plt.tight_layout()
+    fig.canvas.draw()
+    plt.show()
+    #fig.savefig('figure.png')
+    plt.close(fig)
+    return fig
+
+def plot_mel(tensors:list, titles:list[str]):
+    """
+    usage:
+        mel = mel_process(...)
+        fig_mel = plot_mel([mel_groundtruth[0], mel_prediction[0]],
+                            ['groundtruth', 'inferenced(model)'])
+
+    """
+    xlim = max([t.shape[1] for t in tensors])
+    fig, axs = plt.subplots(nrows=len(tensors),
+                            ncols=1,
+                            figsize=(12, 9),
+                            constrained_layout=True)
+
+    if len(tensors) == 1:
+        axs = [axs]
+
+    for i in range(len(tensors)):
+        im = axs[i].imshow(tensors[i],
+                           aspect="auto",
+                           origin="lower",
+                           interpolation='none')
+        #plt.colorbar(im, ax=axs[i])
+        fig.colorbar(im, ax=axs[i])
+        axs[i].set_title(titles[i])
+        axs[i].set_xlim([0, xlim])
+    fig.canvas.draw()
+    #plt.show()
+    #plt.close()
+    plt.close(fig)  # fig.close()
+    return fig
+
+# for text analysis to inference
+
+def convert_phn_to_id(phonemes, phn2id):
+    """
+    phonemes: phonemes separated by ' '
+    phn2id: phn2id dict
+    """
+    return [phn2id[x] for x in ['<bos>'] + phonemes.split(' ') + ['<eos>']]
+
+
+def text2phnid(text, phn2id, language='en', add_blank=True):
+    if language == 'en':
+        from text import G2pEn
+        word2phn = G2pEn()
+        phonemes = word2phn(text)
+        if add_blank:
+            phonemes = ' <blank> '.join(phonemes)
+        return phonemes, convert_phn_to_id(phonemes, phn2id)
+    else:
+        raise ValueError(
+            'Language should be en (for English)!')
+    
+
+def round_significant_digits(value, significant_digits=5):
+    if value == 0:
+        return 0
+
+    import math
+    scale = math.floor(-math.log10(abs(value)))  # Find the first nonzero after the decimal point
+    factor = 10 ** (scale + significant_digits - 1)  # Scale to hold 5 significant digits
+
+    rounded_value = round(value * factor,1) / factor  # Adjust and round off the scale
+    return rounded_value

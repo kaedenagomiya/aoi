@@ -1,4 +1,4 @@
-model_name: gradseptts
+model_name: gradfreqktts
 runtime_name: infer4mid
 synth_kernel: 3
 

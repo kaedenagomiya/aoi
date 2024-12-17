@@ -31,6 +31,8 @@ llvmlite = "^0.43.0"
 librosa = "^0.10.2.post1"
 onnx = "^1.16.2"
 monotonic-align = {git = "https://github.com/unrea1-sama/monotonic_align.git"}
+pandas = "^2.2.3"
+seaborn = "^0.13.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.2"

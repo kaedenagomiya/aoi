@@ -85,6 +85,7 @@ class LinearAttention(BaseModule):
         super().__init__()
         self.heads = heads
         self.hidden_dim = dim_head * heads
+        #self.to_q = SeparableBlock(dim, self.hidden_dim, 1)
         self.to_q = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)
         self.to_k = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)
         self.to_v = torch.nn.Conv2d(dim, self.hidden_dim, 1, bias=False)

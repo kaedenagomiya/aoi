@@ -1,15 +1,16 @@
 #!/bin/bash
 #SBATCH -J btrain_ftfk_run
 #SBATCH -p gpu_short
+#SBATCH --time=0-04:00:00
 #SBATCH -n 1
 #SBATCH -c 16
 #SBATCH --gres=gpu:1
-#SBATCH --time=00-4:00:00
 #SBATCH --mail-user=nagomiya75328@gmail.com
 #SBATCH --mail-type=ALL
 #SBATCH -o /work/sora-sa/aoi/logs4run/stdout-%J.out
 #SBATCH -e /work/sora-sa/aoi/logs4run/stderr-%J.err
 
+# sb --time=01-12:00:00
 #sb --time=01-02:00:00
 
 EXECDIR="/work/sora-sa/aoi"

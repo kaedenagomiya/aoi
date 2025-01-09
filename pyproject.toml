@@ -33,6 +33,13 @@ onnx = "^1.16.2"
 monotonic-align = {git = "https://github.com/unrea1-sama/monotonic_align.git"}
 pandas = "^2.2.3"
 seaborn = "^0.13.2"
+jiwer = "^3.0.5"
+openai-whisper = {git = "https://github.com/openai/whisper.git"}
+pypesq = {url = "https://github.com/vBaiCai/python-pesq/archive/master.zip"}
+pystoi = "^0.4.1"
+fastdtw = "^0.3.4"
+pyworld = "^0.3.4"
+pysptk = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.2"

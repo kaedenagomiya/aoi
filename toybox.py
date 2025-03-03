@@ -7,6 +7,8 @@ import yaml
 import math
 import numpy as np
 import torch
+import torchaudio
+import torchaudio.transforms as taT
 import matplotlib.pyplot as plt
 
 def set_seed(seed):
@@ -165,3 +167,62 @@ def round_significant_digits(value, significant_digits=5):
 
     rounded_value = round(value * factor,1) / factor  # Adjust and round off the scale
     return rounded_value
+
+
+def load_json(json_path:str):
+    #eval_jsonl_path = Path(eval_info[eval_target])
+    eval_jsonl_path = Path(json_path)
+    eval_jsonl_list = []
+    if eval_jsonl_path.exists() == True:
+        print(f'Exist {eval_jsonl_path}')
+        import json
+        with open(eval_jsonl_path) as f:
+            eval_jsonl_list = [json.loads(l) for l in f]
+    else:
+        print(f'No Exists {eval_jsonl_path}')
+
+    return eval_jsonl_list
+
+
+def calc_stoch(json_list, target_ind:str, significant_digits:int=5):
+    """
+    eval_jsonl_list = toybox.load_json(eval_jsonl_path)
+    stoch_list = toybox.calc_stoch(eval_jsonl_list, 'utmos')
+
+    """
+    eval_list = [json_list[n][target] for n in range(len(json_list))]
+    eval_nparr = np.array(eval_list[1:101])
+    
+    eval_mean = round_significant_digits(np.mean(eval_nparr), significant_digits=significant_digits)
+    eval_var = round_significant_digits(np.var(eval_nparr), significant_digits=significant_digits)
+    eval_std = round_significant_digits(np.std(eval_nparr), significant_digits=significant_digits)
+    return {'mean': eval_mean, 'std': eval_std, 'var': eval_var}
+
+
+def load_wavtonp(file_path, target_sample_rate=16000):
+    """
+    load wav, then change to 1ch, then resampling, convert numpy
+
+    Args:
+        file_path (str): wav_path
+        target_sample_rate (int): after fs(default: 16kHz)
+    
+    Returns:
+        np.ndarray: audiodata
+    """
+    # load wav
+    waveform, sample_rate = torchaudio.load(file_path)
+    
+    # change to 1ch
+    if waveform.size(0) > 1:
+        waveform = torch.mean(waveform, dim=0, keepdim=True)
+    
+    # resampling
+    if sample_rate != target_sample_rate:
+        resampler = taT.Resample(orig_freq=sample_rate, new_freq=target_sample_rate)
+        waveform = resampler(waveform)
+    
+    # conv to numpy
+    audio_numpy = waveform.squeeze(0).numpy() # .astype(np.float16)
+    
+    return audio_numpy

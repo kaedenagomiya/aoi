@@ -1,5 +1,5 @@
-model_name: gradfreqktts
-runtime_name: infer4mid
+model_name: gradtfktts
+runtime_name: run_tfk_k3
 synth_kernel: 3
 
 log_dir: ./logs4model/${model_name}/${runtime_name}

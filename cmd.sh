@@ -38,9 +38,12 @@
 
 
 
-lenv_URL="docker://nagomiya/env_aoi:latest"
-lenv_NAME="env_aoi_latest.sif"
-DIR_ATELIER="/work/sora-sa/aoi"
+DIR_ATELIER="/work/nagomiya/aoi"
+#lenv_URL="docker://nagomiya/env_aoi:latest"
+#lenv_NAME="env_aoi_latest.sif"
+lenv_URL="docker://nagomiya/env_aoi_v2:latest"
+lenv_NAME="env_aoi_v2_latest.sif"
+
 INTR_SH="${DIR_ATELIER}/test_intr.sh"
 RUN_SH_GT="${DIR_ATELIER}/run_train_gt.sh"
 RUN_SH_SEPGT="${DIR_ATELIER}/run_train_sepgt.sh"
@@ -49,12 +52,13 @@ RUN_SH_tfk5="${DIR_ATELIER}/run_train_tfk5.sh"
 RUN_SH_timek="${DIR_ATELIER}/run_train_timek.sh"
 RUN_SH_freqk="${DIR_ATELIER}/run_train_freqk.sh"
 RUN_SH_tfkful="${DIR_ATELIER}/run_train_tfkful.sh"
+RUN_SH_tfkfast="${DIR_ATELIER}/run_train_tfkfast.sh"
 
 gpu_num=1
 cpu_num=4
 session_time_intr="0-04:00:00"
 
-
+module load singularity
 
 declare -a gpu_list=(
     "gpu_intr"
@@ -159,6 +163,8 @@ function run(){
             RUN_SH=${RUN_SH_timek}
         elif [ ${1} == "freqk" ]; then
             RUN_SH=${RUN_SH_freqk}
+        elif [ ${1} == "tfkfast" ]; then
+            RUN_SH=${RUN_SH_tfkfast}
         else
             echo "Do not supported option"
             exit 1

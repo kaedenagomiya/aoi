@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J btrain_ftfk_run
-#SBATCH -p gpu_short
-#SBATCH --time=0-04:00:00
+#SBATCH -p gpu_long
+#SBATCH --time=1-12:00:00
 #SBATCH -n 1
 #SBATCH -c 16
 #SBATCH --gres=gpu:1

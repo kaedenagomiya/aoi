@@ -275,7 +275,7 @@ class GradSepTTS(BaseModule):
             y_mu_double = torch.matmul(mu_x.transpose(1, 2), y)
             # mu_square: (b,tx,1), -0.5*sum(mu_i^2*sigma_i^(-2))
             mu_square = torch.sum(factor * (mu_x**2), 1).unsqueeze(-1)
-            log_prior = y_square + y_mu_double + mu_square + const
+            log_prior = y_square - y_mu_double + mu_square + const
 
             #attn = monotonic_align.maximum_path(log_prior, attn_mask.squeeze(1))
             attn = monotonic_align.maximum_path(

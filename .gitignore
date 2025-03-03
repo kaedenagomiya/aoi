@@ -14,6 +14,7 @@ test_mlp
 *.old
 *.sif
 *.tar
+*.tar.gz
 *.zip
 memo.md
 o*.lock

@@ -5,6 +5,7 @@ description = "text-to-speech for edge device"
 authors = ["kaedenagomiya <nagomiya75328@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -35,11 +36,14 @@ pandas = "^2.2.3"
 seaborn = "^0.13.2"
 jiwer = "^3.0.5"
 openai-whisper = {git = "https://github.com/openai/whisper.git"}
-pypesq = {url = "https://github.com/vBaiCai/python-pesq/archive/master.zip"}
 pystoi = "^0.4.1"
 fastdtw = "^0.3.4"
 pyworld = "^0.3.4"
 pysptk = "^1.0.1"
+pypesq = {url = "https://github.com/vBaiCai/python-pesq/archive/master.zip"}
+onnxruntime = "^1.20.1"
+phonemizer = "^3.3.0"
+onnx-opcounter = "^0.0.4"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.2"
